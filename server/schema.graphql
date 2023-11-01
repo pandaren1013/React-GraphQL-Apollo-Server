@@ -1,19 +1,25 @@
 type Query {
-  record(id:ID!): Record
+  record(id: ID!): Record
   records: [Record]
-  sort_users:[Record]
+  sort_users: [Record]
 }
 
 type Mutation {
-  createRecord(name: String!, position: String, level: String): Record
+  createRecord(name: String!, position: String,score:String, level: String): Record
   deleteRecord(id: ID!): Boolean
-  updateRecord(id: ID! name: String, position: String, level: String): Record
-  
+  sortRecord(page: Int!,limit:Int, sortBy:String): Sort
+  updateRecord(id: ID!, name: String, position: String, score:String, level: String): Record
 }
 
 type Record {
   id: ID
   name: String
   position: String
+  score:String
   level: String
+}
+type Sort {
+  page: Int!
+  limit:Int
+  sortBy:String
 }

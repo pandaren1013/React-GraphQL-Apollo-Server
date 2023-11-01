@@ -18,8 +18,8 @@ const resolvers = {
       return records;
     },
 
-    async sort_users(_, { page = 1, limit = 3, sortBy = "name" }, context) {
-      // try {
+    async sort_users(_, { page = 1, limit = 5, sortBy = "name" }, context) {
+      try {
         const collection = await db.collection("records");
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
@@ -33,10 +33,10 @@ const resolvers = {
           .toArray();
           
         return sortedUsers;
-      // } catch (error) {
-      //   console.error("Error sorting users:", error);
-      //   throw new Error("Failed to sort users.");
-      // }
+      } catch (error) {
+        console.error("Error sorting users:", error);
+        throw new Error("Failed to sort users.");
+      }
     }
     // async sort_users(_,  { page = 1, limit = 3, sortBy = "name" },context) {
     //   let collection = await db.collection("records");
@@ -60,12 +60,32 @@ const resolvers = {
     // },
   },
   Mutation: {
-    async createRecord(_, { name, position, level }, context) {
+    async createRecord(_, { name, position,score, level }, context) {
       let collection = await db.collection("records");
-      const insert = await collection.insertOne({ name, position, level });
+      const insert = await collection.insertOne({ name, position,score, level });
       if (insert.acknowledged)
-        return { name, position, level, id: insert.insertedId };
+        return { name, position,score, level, id: insert.insertedId };
       return null;
+    },
+    async sortRecord(_, { page , limit = 5, sortBy = "name" }, context) {
+      try {
+        const collection = await db.collection("records");
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+        
+        const sortField = sortBy === "name" ? "name" : sortBy === "age" ? "age" : "createdAt"; // Assuming "createdAt" field exists
+    
+        const sortedUsers = await collection.find({})
+          .sort({ [sortField]: 1 })
+          .skip(startIndex)
+          .limit(limit)
+          .toArray();
+          
+        return sortedUsers;
+      } catch (error) {
+        console.error("Error sorting users:", error);
+        throw new Error("Failed to sort users.");
+      }
     },
     // async sortRecord(_, { page = 1, limit = 3, sortBy = "name" },context ) {
     //   let collection = await db.collection("records");

@@ -1,10 +1,11 @@
 
 
   export interface RecordObj{
-        id?:any | null,
+        id:number,
         name:string,
         position:string,
-        level:JSX.Element;
+        score:string,
+        level:string;
     }
 
     export interface IUser{

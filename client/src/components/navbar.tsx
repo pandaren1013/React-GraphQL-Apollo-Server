@@ -12,6 +12,7 @@ export const GET_RECORDS = gql`
       id
       name
       position
+      score
       level
     }
   }
@@ -19,6 +20,7 @@ export const GET_RECORDS = gql`
     sort_users {
       id
       name
+      score
       position
       level
     }

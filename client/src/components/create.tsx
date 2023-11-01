@@ -4,8 +4,8 @@ import { useNavigate } from "react-router";
 import { GET_RECORDS } from "./recordList";
 
 const CREATE_RECORD = gql`
-  mutation CreateRecord($name: String!, $position: String, $level: String) {
-    createRecord(name: $name, position: $position, level: $level) {
+  mutation CreateRecord($name: String!, $position: String, $level: String, $score:String) {
+    createRecord(name: $name, position: $position,score:$score, level: $level) {
       id
     }
   }
@@ -17,6 +17,7 @@ export default function Create() {
   const [form, setForm] = useState({
     name: "",
     position: "",
+    score:"",
     level: "",
   });
   const navigate = useNavigate();
@@ -39,12 +40,13 @@ export default function Create() {
             variables: {
               name: form.name,
               position: form.position,
+              score:form.score,
               level: form.level,
             },
             refetchQueries: [GET_RECORDS, "GetRecords"],
           });
 
-          setForm({ name: "", position: "", level: "" });
+          setForm({ name: "", position: "",score:"", level: "" });
           navigate("/");
         }}
       >
@@ -66,6 +68,16 @@ export default function Create() {
             id="position"
             value={form.position}
             onChange={(e) => updateForm({ position: e.target.value })}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="score">Score</label>
+          <input
+            type="text"
+            className="form-control"
+            id="score"
+            value={form.score}
+            onChange={(e) => updateForm({ score: e.target.value })}
           />
         </div>
         <div className="form-group">

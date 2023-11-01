@@ -8,16 +8,19 @@ const UPDATE_RECORD = gql`
     $updateRecordId: ID!
     $position: String
     $name: String
+    $score:String
     $level: String
   ) {
     updateRecord(
       id: $updateRecordId
       position: $position
+      score:$score
       name: $name
       level: $level
     ) {
       name
       position
+      score
       level
     }
   }
@@ -25,10 +28,11 @@ const UPDATE_RECORD = gql`
 
 export default function Edit() {
   const params = useLocation();
-  const { id, name, level, position } = params.state.record;
+  const { id, name, level,score, position } = params.state.record;
   const [form, setForm] = useState({
     name,
     position,
+    score,
     level,
   });
   const navigate = useNavigate();
@@ -52,6 +56,7 @@ export default function Edit() {
             variables: {
               "updateRecordId": id,
               "position": form.position,
+              "score":form.score,
               "name": form.name,
               "level": form.level
             },
@@ -78,6 +83,16 @@ export default function Edit() {
             id="position"
             value={form.position}
             onChange={(e) => updateForm({ position: e.target.value })}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="score">Score: </label>
+          <input
+            type="text"
+            className="form-control"
+            id="score"
+            value={form.score}
+            onChange={(e) => updateForm({ score: e.target.value })}
           />
         </div>
         <div className="form-group">
