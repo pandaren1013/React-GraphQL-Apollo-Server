@@ -8,6 +8,8 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/navbar";
 import RecordList from "./components/recordList";
 import Edit from "./components/edit";
+import Login from "./pages/login";
+import Register from "./pages/register";
 import Create from "./components/create";
  
 const App = () => {
@@ -17,6 +19,8 @@ const App = () => {
      <Routes>
        <Route path="/" element={<RecordList />} />
        <Route path="/edit/:id" element={<Edit />} />
+       <Route path="/login" element={<Login />} />
+       <Route path="/register" element={<Register />} />
        <Route path="/create" element={<Create />} />
      </Routes>
    </div>

@@ -2,8 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { RecordObj } from "../types/user-types";
-// import Pagenation from "./pagenation";
+import { NavLink } from "react-router-dom";
 
+// import Pagenation from "./pagenation";
 
 export const GET_RECORDS = gql`
   query GetRecords {
@@ -17,7 +18,7 @@ export const GET_RECORDS = gql`
   }
 `;
 const DELETE_RECORD = gql`
-  mutation DeleteRecord($id: ID!) {
+  mutation DeleteRecord11($id: ID!) {
     deleteRecord(id: $id)
   }
 `;
@@ -26,10 +27,10 @@ const DELETE_RECORD = gql`
 //   setNewModal: (value: boolean) => void;
 //   setReload: (value: boolean) => void;
 //   inputs: any;
-const Record=(props: {record: RecordObj;}) => {
+const Record = (props: { record: RecordObj }) => {
   // function displayError(err: any) {
-// const Record = ( {record:any})=> {
-  const { record} = props;
+  // const Record = ( {record:any})=> {
+  const { record } = props;
 
   return (
     <tr>
@@ -38,12 +39,10 @@ const Record=(props: {record: RecordObj;}) => {
       <td>{record.score}</td>
       <td>{record.level}</td>
       <td>
-        <Link
-          className="btn btn-link"
-          to={`/edit/${record.id}`}
-          state={{ record }}
-        >
-          Edit
+        <Link to={`/edit/${record.id}`} state={{ record }}>
+          <span className="bg-blue-600 px-3 py-1 rounded-md text-white  font-semibold ">
+            Edit
+          </span>
         </Link>{" "}
         <DeleteRecord id={record.id} />
       </td>
@@ -57,13 +56,14 @@ const PAGE_RECORD = gql`
   }
 `;
 
-const Pagenation=() => {
+const SortRecord = () => {
   // const { record } = props;
-  const id=0;
+  const id = 0;
   const [sortRecord, { data, loading, error }] = useMutation(PAGE_RECORD, {
-    variables: {id},
+    variables: { id },
     refetchQueries: [GET_RECORDS, "GetRecords"],
   });
+  console.log("111", typeof id);
 
   if (loading) return "Deleting...";
   if (error) return `Delete error! ${error.message}`;
@@ -119,19 +119,18 @@ const Pagenation=() => {
               </svg>
             </a>
 
-            <a
+            <p
               onClick={() => {
-                sortRecord({ variables: {id:1} });
+                sortRecord({ variables: { id: 1 } });
               }}
               aria-current="page"
               className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               1
-            </a>
+            </p>
             <a
               onClick={() => {
-                sortRecord({ variables: {id:2} });
-
+                sortRecord({ variables: { id: 2 } });
               }}
               className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
             >
@@ -187,8 +186,8 @@ const Pagenation=() => {
       </div>
     </div>
   );
-}
-const DeleteRecord = ( {id}:{id:number} ) => {
+};
+const DeleteRecord = ({ id }: { id: number }) => {
   const [deleteRecord, { data, loading, error }] = useMutation(DELETE_RECORD, {
     variables: { id },
     refetchQueries: [GET_RECORDS, "GetRecords"],
@@ -199,7 +198,7 @@ const DeleteRecord = ( {id}:{id:number} ) => {
 
   return (
     <button
-      className="btn btn-link"
+      className="bg-red-600 px-2 py-1 rounded-md text-white font-semibold "
       onClick={() => {
         deleteRecord({ variables: { id } });
       }}
@@ -218,24 +217,34 @@ export default function RecordList() {
   // This following section will display the table with the records of individuals.
   return (
     <div>
-      <h3>Record List</h3>
-      <table className="table table-striped" style={{ marginTop: 20 }}>
+      <div className="flex justify-between items-baseline pt-3">
+        <h3 className="text-red-700 font-bold text-3xl ">Record List</h3>
+        <NavLink className="nav-link" to="/create">
+          <span className="bg-green-600 font-semibold rounded-md text-xl px-2 py-1 text-white">
+            Create Record
+          </span>
+        </NavLink>
+      </div>
+      <table
+        className="table table-striped text-center"
+        style={{ marginTop: 20 }}
+      >
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Score</th>
-            <th>Level</th>
-            <th>Action</th>
+            <th className="font-bold text-2xl">Name</th>
+            <th className="font-bold text-2xl">Position</th>
+            <th className="font-bold text-2xl">Score</th>
+            <th className="font-bold text-2xl">Level</th>
+            <th className="font-bold text-2xl">Action</th>
           </tr>
         </thead>
         <tbody>
-          {data?.sort_users.map((record:RecordObj) => (
+          {data?.sort_users.map((record: RecordObj) => (
             <Record record={record} key={record.id} />
           ))}
         </tbody>
       </table>
-      <Pagenation />
+      <SortRecord />
     </div>
   );
 }

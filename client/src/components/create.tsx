@@ -32,7 +32,7 @@ export default function Create() {
   // This following section will display the form that takes the input from the user.
   return (
     <div>
-      <h3>Create New Record</h3>
+      <h3 className="text-red-700 font-bold text-3xl ">Create New Record</h3>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -51,7 +51,7 @@ export default function Create() {
         }}
       >
         <div className="form-group">
-          <label htmlFor="name">Name</label>
+          <label className="text-xl py-2 font-semibold ">Name</label>
           <input
             type="text"
             className="form-control"
@@ -61,7 +61,7 @@ export default function Create() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="position">Position</label>
+          <label className="text-xl py-2 font-semibold ">Position</label>
           <input
             type="text"
             className="form-control"
@@ -71,7 +71,7 @@ export default function Create() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="score">Score</label>
+          <label className="text-xl py-2 font-semibold ">Score</label>
           <input
             type="text"
             className="form-control"
@@ -80,7 +80,7 @@ export default function Create() {
             onChange={(e) => updateForm({ score: e.target.value })}
           />
         </div>
-        <div className="form-group">
+        <div className="text-xl py-2 font-semibold ">
           <div className="form-check form-check-inline">
             <input
               className="form-check-input"
@@ -128,7 +128,7 @@ export default function Create() {
           <input
             type="submit"
             value="Create person"
-            className="btn btn-primary"
+            className="bg-green-600 p-2 font-bold text-white rounded-lg "
           />
         </div>
       </form>

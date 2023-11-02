@@ -48,7 +48,7 @@ export default function Edit() {
   // This following section will display the form that takes input from the user to update the data.
   return (
     <div>
-      <h3>Update Record</h3>
+      <h3 className="text-red-700 font-bold text-3xl ">Update Record</h3>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -65,8 +65,8 @@ export default function Edit() {
           navigate("/", { state: {} });
         }}
       >
-        <div className="form-group">
-          <label htmlFor="name">Name: </label>
+        <div className="pt-3">
+          <label className="text-xl py-2 font-semibold ">Name: </label>
           <input
             type="text"
             className="form-control"
@@ -76,7 +76,7 @@ export default function Edit() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="position">Position: </label>
+          <label className="text-xl py-2 font-semibold ">Position: </label>
           <input
             type="text"
             className="form-control"
@@ -86,7 +86,7 @@ export default function Edit() {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="score">Score: </label>
+          <label className="text-xl py-2 font-semibold ">Score: </label>
           <input
             type="text"
             className="form-control"
@@ -95,10 +95,10 @@ export default function Edit() {
             onChange={(e) => updateForm({ score: e.target.value })}
           />
         </div>
-        <div className="form-group">
-          <div className="form-check form-check-inline">
+        <div className="text-xl py-2 font-semibold ">
+          <div className="form-check form-check-inline cursor-pointer">
             <input
-              className="form-check-input"
+              className="form-check-input "
               type="radio"
               name="positionOptions"
               id="positionIntern"
@@ -106,7 +106,7 @@ export default function Edit() {
               checked={form.level === "Intern"}
               onChange={(e) => updateForm({ level: e.target.value })}
             />
-            <label htmlFor="positionIntern" className="form-check-label">
+            <label htmlFor="positionIntern" className="cursor-pointer">
               Intern
             </label>
           </div>
@@ -120,7 +120,7 @@ export default function Edit() {
               checked={form.level === "Junior"}
               onChange={(e) => updateForm({ level: e.target.value })}
             />
-            <label htmlFor="positionJunior" className="form-check-label">
+            <label htmlFor="positionJunior" className="cursor-pointer">
               Junior
             </label>
           </div>
@@ -134,7 +134,7 @@ export default function Edit() {
               checked={form.level === "Senior"}
               onChange={(e) => updateForm({ level: e.target.value })}
             />
-            <label htmlFor="positionSenior" className="form-check-label">
+            <label htmlFor="positionSenior" className=" cursor-pointer">
               Senior
             </label>
           </div>
@@ -145,7 +145,7 @@ export default function Edit() {
           <input
             type="submit"
             value="Update Record"
-            className="btn btn-primary"
+            className="bg-green-600 p-2 font-bold text-white rounded-lg "
           />
         </div>
       </form>
