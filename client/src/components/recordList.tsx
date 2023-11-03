@@ -17,6 +17,15 @@ export const GET_RECORDS = gql`
     }
   }
 `;
+const GET_MYSELF = gql`
+  query user {
+    user {
+      email
+      password
+    }
+  }
+`;
+
 const DELETE_RECORD = gql`
   mutation DeleteRecord11($id: ID!) {
     deleteRecord(id: $id)
@@ -31,7 +40,10 @@ const Record = (props: { record: RecordObj }) => {
   // function displayError(err: any) {
   // const Record = ( {record:any})=> {
   const { record } = props;
-
+  const { loading, error, data } = useQuery(GET_RECORDS);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+  console.log(data);
   return (
     <tr>
       <td>{record.name}</td>
