@@ -1,19 +1,19 @@
 type Query {
+  hello: String
   record(id: ID!): Record
   records: [Record]
   sort_users: [Record]
-  pages(page: Int, limit: Int): [Sort!]!
+  pages(page: Int): [Record]
   users: [userResponse]
   user: userResponse
-  
 }
 
 type Mutation {
-  register(email: String, password: String): userResponse
-  login(email: String, password: String): userResponse
+  register(name: String, email: String, password: String): userResponse
+  login(name: String,email: String, password: String): userResponse
   createRecord(name: String!, position: String,score:String, level: String): Record
   deleteRecord(id: ID!): Boolean
-  sortRecord(page: Int!,limit:String): Sort
+  pagenation(page: Int!): [Record]
   updateRecord(id: ID!, name: String, position: String, score:String, level: String): Record
 }
 
@@ -26,8 +26,11 @@ type Record {
 }
 type userResponse {
     id: ID
+    name: String
     email: String
     password: String
+    token:String 
+   
   }
 
 type User {

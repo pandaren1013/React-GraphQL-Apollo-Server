@@ -11,6 +11,7 @@ import resolvers from "./resolvers.js";
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
 import http from 'http';
+import jwt from "jsonwebtoken";
 
 import { fileURLToPath } from 'url';
 dotenv.config();
@@ -38,10 +39,42 @@ const httpServer = http.createServer(app);
 // const server = new ApolloServer({
 //   schema,
 // });
+// async function startServer() {
+//   const server = new ApolloServer({
+//     typeDefs,
+//     resolvers,
+//     context:async ({ req }) => {
+//       const token = req.header("Authorization");
+//       if (token) {
+//         return {
+//           user: jwt.verify(token, process.env.JWT_SECRET),
+//         };
+//       }
+//       return null;
+//     },
+//   });
+//   await server.start();
+//   // await connectDB();
+
+//   server.applyMiddleware({ app, path: "/graphql" });
+// }
+// startServer();
+
+
 const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  
+  // context: ({ req }) => {
+  //   const token = req.header("Authorization");
+  //   if (token) {
+  //     return {
+  //       user: jwt.verify(token, process.env.JWT_SECRET),
+  //     };
+  //   }
+  //   return null;
+  // },
+  // plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   // context: ({ req, res }) => ({ req, res }),
 });
 // async function startServer() {
@@ -62,8 +95,20 @@ app.use("/graphql",
   cors<cors.CorsRequest>(),
   express.json(), 
   // expressMiddleware(server)
+  // expressMiddleware(server, {
+  //   context: async ({ req }) => ({ token: req.headers.token }),
+  // })
   expressMiddleware(server, {
-    context: async ({ req }) => ({ token: req.headers.token }),
+    context:async ({ req }) => {
+      const token = req.header("Authorization");
+      if (token) {
+        return {
+          user: jwt.verify(token, process.env.JWT_SECRET),
+        };
+      }
+      return null;
+    },
+    // context: async ({ req }) => ({ token: req.headers.token }),
   })
 );
 
@@ -73,4 +118,4 @@ app.use("/graphql",
 // });
 // Modified server startup
 await new Promise<void>((resolve) => httpServer.listen(PORT, resolve));
-console.log(`🚀 Server ready at http://localhost:4000/`);
+console.log(`🚀 Server ready at http://localhost:5050/`);

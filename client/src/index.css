@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 body{
-    padding:70px 250px 70px 250px;
-    background-color:rgb(230, 205, 226)
+    padding:30px 200px 30px 200px;
+    background-color:#b6c6e3
 }

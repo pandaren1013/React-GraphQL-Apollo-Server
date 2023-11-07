@@ -1,6 +1,4 @@
 import React from "react";
-
- 
 // We use Route in order to define the different routes of our application
 import { Route, Routes } from "react-router-dom";
  
@@ -11,17 +9,19 @@ import Edit from "./components/edit";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Create from "./components/create";
+import Chart from "./pages/chart";
  
 const App = () => {
  return (
    <div>
-     <Navbar />
+      <Navbar />
      <Routes>
        <Route path="/" element={<RecordList />} />
        <Route path="/edit/:id" element={<Edit />} />
        <Route path="/login" element={<Login />} />
        <Route path="/register" element={<Register />} />
        <Route path="/create" element={<Create />} />
+       <Route path="/chart" element={<Chart />} />
      </Routes>
    </div>
  );

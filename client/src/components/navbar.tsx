@@ -1,7 +1,5 @@
 import React from "react";
-// import { Menu } from 'semantic-ui-react';
-import { gql, useQuery, useMutation } from "@apollo/client";
-
+import { useNavigate } from "react-router";
 // We import bootstrap to make our application look better.
 import "bootstrap/dist/css/bootstrap.css";
 
@@ -9,31 +7,44 @@ import "bootstrap/dist/css/bootstrap.css";
 import { NavLink } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
+  const authToken = localStorage.getItem("auth_token");
   return (
     <div>
       <nav className="flex  justify-between items-baseline  ">
         <div className="flex justify-start items-baseline">
           <NavLink className="navbar-brand" to="/">
+            <div className="flex items-center">
             <img
-              style={{ width: 35 + "%" }}
-              src="https://d3cy9zhslanhfa.cloudfront.net/media/3800C044-6298-4575-A05D5C6B7623EE37/4B45D0EC-3482-4759-82DA37D8EA07D229/webimage-8A27671A-8A53-45DC-89D7BF8537F15A0D.png"
+              style={{ width: 20 + "%" }}
+              src="/assets/images/logo.svg"
             ></img>
+            <span className="text-pink-500 text-3xl font-bold">GraphQL</span>
+            
+            </div>
           </NavLink>
+        </div>
+       
+        {authToken ? (
+          <>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                localStorage.setItem("auth_token", "");
 
-          
-        </div>
-        <div className="flex gap-3 justify-end">
-          <NavLink className="nav-link" to="/login">
-            <span className="bg-blue-600 font-semibold rounded-md text-xl px-2 py-1 text-white">
-              Login
-            </span>
-          </NavLink>
-          <NavLink className="nav-link" to="/register">
-            <span className="bg-blue-600 font-semibold rounded-md text-xl px-2 py-1 text-white">
-              Register
-            </span>
-          </NavLink>
-        </div>
+                navigate("/login", { state: {} });
+              }}
+            >
+              <span className="text-medium mt-7 block rounded-full bg-gradient-to-b from-green-700 from-60% to-green-400  py-[12px] px-11 text-center text-base text-white hover:bg-gradient-to-b hover:from-blue-700  hover:to-blue-400">
+                Logout
+              </span>
+            </button>
+          </>
+        ) : (
+          <button>
+          </button>
+        )}
       </nav>
     </div>
   );

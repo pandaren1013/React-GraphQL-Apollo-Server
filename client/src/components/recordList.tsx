@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, useLazyQuery } from "@apollo/client";
 import { RecordObj } from "../types/user-types";
 import { NavLink } from "react-router-dom";
-
-// import Pagenation from "./pagenation";
+import { useNavigate } from "react-router";
 
 export const GET_RECORDS = gql`
   query GetRecords {
-    sort_users {
+    records {
+      id
+      name
+      position
+      score
+      level
+    }
+  }
+`;
+
+const GET_PAGES = gql`
+  query GetPages($id: Int!) {
+    pages(page: $id) {
       id
       name
       position
@@ -20,6 +31,7 @@ export const GET_RECORDS = gql`
 const GET_MYSELF = gql`
   query user {
     user {
+      name
       email
       password
     }
@@ -31,19 +43,9 @@ const DELETE_RECORD = gql`
     deleteRecord(id: $id)
   }
 `;
-// props: {
-//   newmodal: boolean;
-//   setNewModal: (value: boolean) => void;
-//   setReload: (value: boolean) => void;
-//   inputs: any;
+
 const Record = (props: { record: RecordObj }) => {
-  // function displayError(err: any) {
-  // const Record = ( {record:any})=> {
   const { record } = props;
-  const { loading, error, data } = useQuery(GET_RECORDS);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-  console.log(data);
   return (
     <tr>
       <td>{record.name}</td>
@@ -62,23 +64,11 @@ const Record = (props: { record: RecordObj }) => {
   );
 };
 
-const PAGE_RECORD = gql`
-  mutation SortRecord($id: Int!) {
-    sortRecord(page: $id)
-  }
-`;
-
-const SortRecord = () => {
-  // const { record } = props;
-  const id = 0;
-  const [sortRecord, { data, loading, error }] = useMutation(PAGE_RECORD, {
-    variables: { id },
-    refetchQueries: [GET_RECORDS, "GetRecords"],
-  });
-  console.log("111", typeof id);
-
-  if (loading) return "Deleting...";
-  if (error) return `Delete error! ${error.message}`;
+const Pagenation = ({pagination}: { pagination: any}) => {
+  const { loading, error, data } = useQuery(GET_RECORDS);
+  // console.log('total',data.records.length);
+  // const TotalRecords=data.records.length;
+  const[pagenum,setPagenum]=useState(1);
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
@@ -101,9 +91,9 @@ const SortRecord = () => {
             Showing
             <span className="px-2 font-medium">1</span>
             to
-            <span className="px-2 font-medium">10</span>
+            <span className="px-2 font-medium">3</span>
             of
-            <span className="px-2 font-medium">97</span>
+            <span className="px-2 font-medium">99</span>
             results
           </p>
         </div>
@@ -124,33 +114,39 @@ const SortRecord = () => {
                 aria-hidden="true"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 />
               </svg>
             </a>
 
             <p
               onClick={() => {
-                sortRecord({ variables: { id: 1 } });
+                pagination(1);
+                setPagenum(1);
               }}
               aria-current="page"
-              className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className={`${pagenum===1?"bg-indigo-600":""} cursor-pointer relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-20 focus:outline-offset-0 md:inline-flex`}
             >
               1
             </p>
             <a
               onClick={() => {
-                sortRecord({ variables: { id: 2 } });
+                pagination(2);
+                setPagenum(2);
+
               }}
-              className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              className={`${pagenum===2?"bg-indigo-600":""} cursor-pointer relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-20 focus:outline-offset-0 md:inline-flex`}
             >
               2
             </a>
             <a
-              href="#"
-              className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+              onClick={() => {
+                pagination(3);
+                setPagenum(3);
+              }}
+              className={`${pagenum===3?"bg-indigo-600":""} cursor-pointer relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-20 focus:outline-offset-0 md:inline-flex`}
             >
               3
             </a>
@@ -158,20 +154,29 @@ const SortRecord = () => {
               ...
             </span>
             <a
-              href="#"
-              className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+              onClick={() => {
+                pagination(8);
+                setPagenum(8);
+              }}
+              className={`${pagenum===8?"bg-indigo-600":""} cursor-pointer relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-20 focus:outline-offset-0 md:inline-flex`}
             >
               8
             </a>
             <a
-              href="#"
-              className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              onClick={() => {
+                pagination(9);
+                setPagenum(9);
+              }}
+              className={`${pagenum===9?"bg-indigo-600":""} cursor-pointer relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-20 focus:outline-offset-0 md:inline-flex`}
             >
               9
             </a>
             <a
-              href="#"
-              className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+              onClick={() => {
+                pagination(10);
+                setPagenum(10);
+              }}
+              className={`${pagenum===10?"bg-indigo-600":""} cursor-pointer relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300  focus:z-20 focus:outline-offset-0 md:inline-flex`}
             >
               10
             </a>
@@ -187,9 +192,9 @@ const SortRecord = () => {
                 aria-hidden="true"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                  clip-rule="evenodd"
+                  clipRule="evenodd"
                 />
               </svg>
             </a>
@@ -200,11 +205,15 @@ const SortRecord = () => {
   );
 };
 const DeleteRecord = ({ id }: { id: number }) => {
-  const [deleteRecord, { data, loading, error }] = useMutation(DELETE_RECORD, {
-    variables: { id },
-    refetchQueries: [GET_RECORDS, "GetRecords"],
-  });
+  const navigate = useNavigate();
 
+  const [deleteRecord, { data, loading, error }] = useMutation(DELETE_RECORD, {
+    variables: { id:1 },
+    refetchQueries: [GET_PAGES, "GetPages"],
+  }
+ 
+  );
+  // navigate("/");
   if (loading) return "Deleting...";
   if (error) return `Delete error! ${error.message}`;
 
@@ -221,8 +230,21 @@ const DeleteRecord = ({ id }: { id: number }) => {
 };
 
 export default function RecordList() {
-  const { loading, error, data } = useQuery(GET_RECORDS);
+  const { loading, error, data, refetch } = useQuery(GET_PAGES, {
+    variables: { id: 1},
+  });
 
+  const handleRefetch = (newVal: number) => {
+    console.log(newVal);
+    refetch({ id: newVal});
+  }
+  // const sortByName = () => {
+  //   const { loading, error, data, refetch } = useQuery(GET_PAGES, {
+  //     variables: { id: 1},
+  //     refetch: [GET_PAGES, "GetPages"],
+  //   });
+  // }
+  console.log(data);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
@@ -231,11 +253,10 @@ export default function RecordList() {
     <div>
       <div className="flex justify-between items-baseline pt-3">
         <h3 className="text-red-700 font-bold text-3xl ">Record List</h3>
-        <NavLink className="nav-link" to="/create">
-          <span className="bg-green-600 font-semibold rounded-md text-xl px-2 py-1 text-white">
-            Create Record
-          </span>
-        </NavLink>
+        <div className="flex gap-5">
+        <a target="blank" className="text-medium mt-7 block rounded-full bg-gradient-to-b from-green-700 from-60% to-green-400  py-[12px] px-11 text-center text-base text-white hover:bg-gradient-to-b hover:from-blue-700  hover:to-blue-400" href="/create">Create Record</a>
+        <a target="blank" className="text-medium mt-7 block rounded-full bg-gradient-to-b from-green-700 from-60% to-green-400  py-[12px] px-11 text-center text-base text-white hover:bg-gradient-to-b hover:from-blue-700  hover:to-blue-400" href="/chart">Chart View</a>
+        </div>
       </div>
       <table
         className="table table-striped text-center"
@@ -251,12 +272,12 @@ export default function RecordList() {
           </tr>
         </thead>
         <tbody>
-          {data?.sort_users.map((record: RecordObj) => (
+          {data?.pages.map((record: RecordObj) => (
             <Record record={record} key={record.id} />
           ))}
         </tbody>
       </table>
-      <SortRecord />
+      <Pagenation pagination={handleRefetch}/>
     </div>
   );
 }
