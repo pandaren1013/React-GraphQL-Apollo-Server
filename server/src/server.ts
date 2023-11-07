@@ -35,69 +35,18 @@ const typeDefs = gql(
 );
 const httpServer = http.createServer(app);
 
-// const schema = buildSubgraphSchema({ typeDefs, resolvers, context: ({ req, res }) => ({ req, res }) });
-// const server = new ApolloServer({
-//   schema,
-// });
-// async function startServer() {
-//   const server = new ApolloServer({
-//     typeDefs,
-//     resolvers,
-//     context:async ({ req }) => {
-//       const token = req.header("Authorization");
-//       if (token) {
-//         return {
-//           user: jwt.verify(token, process.env.JWT_SECRET),
-//         };
-//       }
-//       return null;
-//     },
-//   });
-//   await server.start();
-//   // await connectDB();
-
-//   server.applyMiddleware({ app, path: "/graphql" });
-// }
-// startServer();
-
-
 const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,
   
-  // context: ({ req }) => {
-  //   const token = req.header("Authorization");
-  //   if (token) {
-  //     return {
-  //       user: jwt.verify(token, process.env.JWT_SECRET),
-  //     };
-  //   }
-  //   return null;
-  // },
-  // plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
-  // context: ({ req, res }) => ({ req, res }),
 });
-// async function startServer() {
-//   const apolloServer = new ApolloServer({
-//     typeDefs,
-//     resolvers,
-//     // context: ({ req, res }) => ({ req, res }),
-//   });
-//   await apolloServer.start();
-//   console.log(resolvers.Mutation.register);
-//   apolloServer.applyMiddleware({ app });
-// }
-// Note you must call `start()` on the `ApolloServer`
-// instance before passing the instance to `expressMiddleware`
+
 await server.start();
 
 app.use("/graphql", 
   cors<cors.CorsRequest>(),
   express.json(), 
-  // expressMiddleware(server)
-  // expressMiddleware(server, {
-  //   context: async ({ req }) => ({ token: req.headers.token }),
-  // })
+ 
   expressMiddleware(server, {
     context:async ({ req }) => {
       const token = req.header("Authorization");
@@ -108,14 +57,8 @@ app.use("/graphql",
       }
       return null;
     },
-    // context: async ({ req }) => ({ token: req.headers.token }),
   })
 );
 
-// start the Express server
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port: ${PORT}`);
-// });
-// Modified server startup
 await new Promise<void>((resolve) => httpServer.listen(PORT, resolve));
 console.log(`🚀 Server ready at http://localhost:5050/`);

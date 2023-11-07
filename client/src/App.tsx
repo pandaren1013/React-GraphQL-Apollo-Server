@@ -17,47 +17,40 @@ const App = () => {
     <AuthProvider>
       <Navbar />
       <Routes>
-
-      <Route
-            path='/'
-            element={
-              <RequireAuth>
-                <RecordList />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/edit/:id"
-            element={
-              <RequireAuth>
-                <Edit />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/chart"
-            element={
-              <RequireAuth>
-                <Chart />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/create"
-            element={
-              <RequireAuth>
-                <Create />
-              </RequireAuth>
-            }
-          />
-
-          {/* <Route path="auth/*" element={<Login />} /> */}
-        {/* <Route path="/" element={<RecordList />} />
-        <Route path="/edit/:id" element={<Edit />} /> */}
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <RecordList />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/edit/:id"
+          element={
+            <RequireAuth>
+              <Edit />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/chart"
+          element={
+            <RequireAuth>
+              <Chart />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/create"
+          element={
+            <RequireAuth>
+              <Create />
+            </RequireAuth>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* <Route path="/create" element={<Create />} />
-        <Route path="/chart" element={<Chart />} /> */}
       </Routes>
     </AuthProvider>
   );

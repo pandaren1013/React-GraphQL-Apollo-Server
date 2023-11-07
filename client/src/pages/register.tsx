@@ -7,8 +7,8 @@ import { toastNotification } from "../components/ToastNTF";
 import { useMediaQuery } from "react-responsive";
 import Navbar from "../components/navbar";
 const ADD_ACCOUNT = gql`
-  mutation register($name:String!,$email: String!, $password: String!) {
-    register(name:$name, email: $email, password: $password) {
+  mutation register($name: String!, $email: String!, $password: String!) {
+    register(name: $name, email: $email, password: $password) {
       name
       email
       password
@@ -50,13 +50,7 @@ export default function Register() {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-
-  // const [invalidEmail, setInvalidEmail, invalidEmailRef] = useState(false);
-  // const [invalidName, setInvalidName, invalidNameRef] = useState(false);
-
-  // const [invalidPass, setInvalidPass, invalidPassRef] = useState(false);
   const isDesktop = useMediaQuery({ query: "(min-width: 1650px)" });
-
   const hasNumber = /\d/;
   const navigate = useNavigate();
   const [formState, setFormState] = useState({
@@ -84,17 +78,12 @@ export default function Register() {
     if (password.length > 6 && hasNumber.test(password)) {
       setInvalidPass(false);
     }
-    if (
-      name === "" ||
-      
-      password.length < 7 ||
-      !hasNumber.test(password)
-    ) {
+    if (name === "" || password.length < 7 || !hasNumber.test(password)) {
       setInvalidForm(true);
     } else {
       setInvalidForm(false);
     }
-  }, [name,email, password]);
+  }, [name, email, password]);
   const handleSubmit = () => {
     createUser({
       variables: {
@@ -106,16 +95,12 @@ export default function Register() {
   };
 
   if (loading) return "Loding...";
-  // if (error) return `Login error! ${error.message}`;
-
   function updateForm(value: any) {
     return setFormState((prev) => {
       return { ...prev, ...value };
     });
   }
-
   return (
-   
     <div className="mt-32 items-center flex flex-col">
       <div className="flex flex-col mb-16 h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-lightPrimary hover:cursor-pointer dark:bg-navy-800">
         <h4 className="items-center mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
@@ -285,31 +270,29 @@ export default function Register() {
               (min 7 letters and 1 number)
             </span>
           </div>
-         
-          <div className="flex gap-10 mr-5  justify-end mt-4 z-1">
-          <div className="form-group ">
-            <input
-              // type="submit"
-              type="button"
-              onClick={handleSubmit}
-              value="SIGN UP"
-              className="bg-green-600 py-2 px-3 font-bold text-white rounded-lg z-1"
-            />
-          </div>
-          <div className="form-group">
-            <a href={"/login"}>
-            <input
-              type="button"
-              value="SIGN IN"
-              className="bg-green-600 px-3 py-2 font-bold text-white rounded-lg "
-            />
-            </a>
-          </div>
-        </div>
 
+          <div className="flex gap-10 mr-5  justify-end mt-4 z-1">
+            <div className="form-group ">
+              <input
+                // type="submit"
+                type="button"
+                onClick={handleSubmit}
+                value="SIGN UP"
+                className="bg-green-600 py-2 px-3 font-bold text-white rounded-lg z-1"
+              />
+            </div>
+            <div className="form-group">
+              <a href={"/login"}>
+                <input
+                  type="button"
+                  value="SIGN IN"
+                  className="bg-green-600 px-3 py-2 font-bold text-white rounded-lg "
+                />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
-     
     </div>
   );
 }

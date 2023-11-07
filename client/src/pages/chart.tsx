@@ -1,7 +1,5 @@
 import React from "react";
 import BarChart from "components/BarChart";
-// import { barChartDataDailyTraffic } from "../variables/charts";
-// import { barChartOptionsDailyTraffic } from "variables/charts";
 import { MdArrowDropUp } from "react-icons/md";
 import { RecordObj } from "../types/user-types";
 import { useQuery, gql } from "@apollo/client";
